@@ -37,36 +37,34 @@ const Modal = styled.div`
     display: ${props => props.show ? 'block' : 'none'};
 `;
 
-export function withModal(modalName) {
-    return (WrappedComponent) => {
-        const WithModal = props => (
-            <ModalPortal>
-                <Modal show={props.show} >
-                    <WrappedComponent {...props} />
-                </Modal>
-            </ModalPortal>
-        );
-    
-        WithModal.displayName = `WithModal(${getDisplayName(WrappedComponent)})`;
-    
-        function mapStateToProps(state) {
-            const modal = state.modals[modalName];
-            if (modal) {
-                return {
-                    ...modal
-                };
-            }
+export function withModal(WrappedComponent) {
+    const WithModal = props => (
+        <ModalPortal>
+            <Modal show={props.show} >
+                <WrappedComponent {...props} />
+            </Modal>
+        </ModalPortal>
+    );
+
+    WithModal.displayName = `WithModal(${getDisplayName(WrappedComponent)})`;
+
+    function mapStateToProps(state, ownProps) {
+        const modal = state.modals[ownProps.modalName];
+        if (modal) {
             return {
-                show: false,
+                ...modal
             };
         }
-        
-        function mapDispatchToProps(dispatch) {
-            return {
-                close: () => dispatch(hideModal(modalName))
-            };
-        }
-        
-        return connect(mapStateToProps, mapDispatchToProps)(WithModal);
+        return {
+            show: false,
+        };
     }
+    
+    function mapDispatchToProps(dispatch, ownProps) {
+        return {
+            close: () => dispatch(hideModal(ownProps.modalName))
+        };
+    }
+    
+    return connect(mapStateToProps, mapDispatchToProps)(WithModal);
 }

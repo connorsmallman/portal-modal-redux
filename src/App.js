@@ -7,13 +7,17 @@ import { withModal } from './Modal';
 import { showModal } from './modules/modal';
 
 const MyComponent = (props) => (
-  <div>
+  <div id="modal">
     This is my modal. There are many like it, but this one is mine. My modal is my best friend. It is my life. I must master it as I master my life. My modal, without me, is useless.
     <button onClick={props.close}>Close</button>
   </div>
 );
 
-const MyModal = withModal('MyModal')(MyComponent);
+const MyModal = withModal(MyComponent);
+
+MyModal.defaultProps = {
+  modalName: 'hello',
+}
 
 class App extends Component {
   render() {
@@ -28,7 +32,7 @@ class App extends Component {
             To get started, edit <code>src/App.js</code> and save to reload.
           </p>
           <MyModal />
-          <button onClick={() => store.dispatch(showModal('MyModal'))}>Show modal</button>
+          <button onClick={() => store.dispatch(showModal('hello'))}>Show modal</button>
         </div>
       </Provider>
     );
